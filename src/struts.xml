@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+    <!--规定上传文件的最大大小,单位是字节 Byte -->
+    <constant name="struts.multipart.maxSize" value="20971520"/>
+
+    <package name="upload" extends="struts-default" >
+        <action name="upload"
+                class="com.lanou.action.UploadAction"
+                method="upload">
+            <!--指定文件上传的拦截器,用来限制上传文件的MIME和扩展名-->
+            <interceptor-ref name="defaultStack">
+                <param name="fileUpload.allowedExtensions">.png,.jpg,.jpeg</param>
+                <param name="fileUpload.allowedTypes">image/*</param>
+            </interceptor-ref>
+            <result name="success">/success.jsp</result>
+            <result name="input">/upload.jsp</result>
+        </action>
+    </package>
+
+    <package name="download" extends="struts-default">
+        <action name="download"
+                class="com.lanou.action.DownloadAction"
+                method="download">
+            <result name="success" type="stream">
+                <!--指定输入流-->
+                <param name="inputName">inputStream</param>
+                <!--attachment:通知浏览器去下载该文件
+                    如果不指定属性,那么浏览器会直接打开该文件
+                    fileName:代表用户下载之后默认保存的文件名
+                -->
+                <param name="contentDisposition">attachment;filename=${fileName}</param>
+                <!--通知浏览器以那种方式打开文件-->
+                <param name="contentType">image/jpg</param>
+            </result>
+        </action>
+    </package>
+</struts>
